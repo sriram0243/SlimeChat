@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SlimeChat — Register</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="auth-body">
+
+<div class="particles" id="particles"></div>
+<div class="slime-orb orb1"></div>
+<div class="slime-orb orb2"></div>
+<div class="slime-orb orb3"></div>
+
+<div class="auth-wrapper">
+    <!-- Left: Rimuru showcase -->
+    <div class="auth-showcase">
+        <div class="showcase-glow"></div>
+        <img
+            src="https://media.tenor.com/kfpGGwE_r0cAAAAd/rimuru-tempest-tensura-nikki.gif"
+            alt="Rimuru Tempest"
+            class="rimuru-main-gif"
+        />
+        <div class="showcase-text">
+            <h1 class="showcase-title">Join the Adventure</h1>
+            <p class="showcase-subtitle">Rimuru believes in you! Create your account 🔮</p>
+        </div>
+        <div class="showcase-badges">
+            <span class="badge">🌀 Free Forever</span>
+            <span class="badge">⚡ Instant Setup</span>
+            <span class="badge">💎 Premium UI</span>
+        </div>
+    </div>
+
+    <!-- Right: Register card -->
+    <div class="auth-card">
+        <div class="card-glow-top"></div>
+
+        <div class="auth-header">
+            <div class="auth-icon-wrap">
+                <img
+                    src="https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif"
+                    alt="Slime"
+                    class="auth-icon-gif"
+                />
+            </div>
+            <h2 class="auth-title">Create Account</h2>
+            <p class="auth-desc">Join the world of slimes today</p>
+        </div>
+
+        {% if error %}
+        <div class="alert-error">
+            <span class="alert-icon">⚠️</span>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/register" class="auth-form">
+            <div class="field-group">
+                <label>Username</label>
+                <div class="field-wrap">
+                    <span class="field-icon">👤</span>
+                    <input type="text" name="username" placeholder="Choose a username" minlength="3" autocomplete="username" required/>
+                    <div class="field-line"></div>
+                </div>
+            </div>
+            <div class="field-group">
+                <label>Password</label>
+                <div class="field-wrap">
+                    <span class="field-icon">🔐</span>
+                    <input type="password" name="password" placeholder="Create a password" minlength="4" autocomplete="new-password" required/>
+                    <div class="field-line"></div>
+                </div>
+            </div>
+            <button type="submit" class="auth-btn">
+                <span class="btn-text">Create Account</span>
+                <span class="btn-shimmer"></span>
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="/login">Sign in →</a>
+        </p>
+    </div>
+</div>
+
+<script src="/static/js/particles.js"></script>
+</body>
+</html>

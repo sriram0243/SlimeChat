@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SlimeChat 💙</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="chat-body">
+
+<div class="chat-app">
+
+    <!-- ═══ SIDEBAR ═══════════════════════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Sidebar header with Rimuru gif -->
+        <div class="sidebar-top">
+            <div class="sidebar-brand">
+                <img
+                    src="https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif"
+                    alt="Rimuru"
+                    class="brand-gif"
+                />
+                <div class="brand-text">
+                    <span class="brand-name">SlimeChat</span>
+                    <span class="brand-user">@{{ current_username }}</span>
+                </div>
+            </div>
+            <div class="sidebar-actions">
+                <button class="icon-btn" title="Logout" onclick="window.location.href='/logout'">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Rimuru banner inside sidebar -->
+        <div class="sidebar-rimuru-banner">
+            <img
+                src="https://media.tenor.com/zXnP5MqQbvEAAAAd/rimuru-tempest-tensura.gif"
+                alt="Rimuru"
+                class="sidebar-rimuru-gif"
+            />
+            <div class="banner-overlay">
+                <span class="banner-text">💙 That Time I Got Reincarnated as a Slime</span>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-wrap">
+            <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <input type="text" id="userSearch" class="search-input" placeholder="Search users..."/>
+        </div>
+
+        <div class="section-label">
+            <span class="slime-dot"></span> Guild Members
+        </div>
+
+        <!-- User list -->
+        <ul class="user-list" id="userList">
+            {% for user in users %}
+            <li class="user-item"
+                id="user-{{ user.id }}"
+                data-user-id="{{ user.id }}"
+                data-username="{{ user.username }}"
+                onclick="selectUser({{ user.id }}, '{{ user.username }}')">
+                <div class="user-avatar-wrap">
+                    <div class="user-avatar-letter">{{ user.username[0]|upper }}</div>
+                    <span class="status-dot offline" id="status-{{ user.id }}"></span>
+                </div>
+                <div class="user-meta">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-preview" id="preview-{{ user.id }}">Click to chat</span>
+                </div>
+                <span class="unread-badge" id="badge-{{ user.id }}" style="display:none">0</span>
+            </li>
+            {% else %}
+            <li class="empty-list">
+                <img src="https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif" class="empty-gif" alt="empty"/>
+                <p>No users yet!<br>Invite some friends 🔮</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <!-- ═══ MAIN CHAT ══════════════════════════════════════════════════════ -->
+    <main class="chat-main" id="chatMain">
+
+        <!-- Welcome screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-inner">
+                <img
+                    src="https://media.tenor.com/kfpGGwE_r0cAAAAd/rimuru-tempest-tensura-nikki.gif"
+                    alt="Rimuru Welcome"
+                    class="welcome-gif"
+                />
+                <h2 class="welcome-title">Welcome, {{ current_username }}!</h2>
+                <p class="welcome-sub">Select a guild member to start chatting</p>
+                <div class="welcome-chips">
+                    <span>💙 Real-time</span>
+                    <span>⚡ Private</span>
+                    <span>🔮 Magical</span>
+                </div>
+            </div>
+            <!-- Floating rimuru in corner -->
+            <img
+                src="https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif"
+                class="floating-slime"
+                alt="floating slime"
+            />
+        </div>
+
+        <!-- Chat window -->
+        <div class="chat-window" id="chatWindow" style="display:none">
+
+            <!-- Header -->
+            <div class="chat-header">
+                <button class="back-btn" id="backBtn" onclick="goBack()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M19 12H5M12 5l-7 7 7 7"/>
+                    </svg>
+                </button>
+                <div class="header-avatar">
+                    <div class="header-avatar-letter" id="headerLetter">R</div>
+                    <span class="status-dot" id="headerDot"></span>
+                </div>
+                <div class="header-info">
+                    <span class="header-name" id="headerName">Chat</span>
+                    <span class="header-status" id="headerStatus">Offline</span>
+                </div>
+                <!-- Tiny Rimuru in header -->
+                <img
+                    src="https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif"
+                    class="header-slime-gif"
+                    alt="slime"
+                />
+            </div>
+
+            <!-- Messages area with animated background -->
+            <div class="messages-area" id="messagesArea">
+                <!-- Animated bg elements -->
+                <div class="msg-bg-orb orb-a"></div>
+                <div class="msg-bg-orb orb-b"></div>
+
+                <div class="messages-container" id="messagesContainer"></div>
+
+                <!-- Typing -->
+                <div class="typing-row" id="typingIndicator" style="display:none">
+                    <div class="typing-bubble">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <span class="typing-label" id="typingText">typing...</span>
+                </div>
+            </div>
+
+            <!-- Chat input area -->
+            <div class="input-zone">
+                <!-- Rimuru reaction gif row -->
+                <div class="reaction-bar" id="reactionBar">
+                    <button class="reaction-gif-btn" onclick="sendGifReaction('excited')" title="Excited Rimuru">
+                        <img src="https://media.tenor.com/zXnP5MqQbvEAAAAd/rimuru-tempest-tensura.gif" alt="excited"/>
+                    </button>
+                    <button class="reaction-gif-btn" onclick="sendGifReaction('slime')" title="Slime">
+                        <img src="https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif" alt="slime"/>
+                    </button>
+                    <button class="reaction-gif-btn" onclick="sendGifReaction('happy')" title="Happy Rimuru">
+                        <img src="https://media.tenor.com/kfpGGwE_r0cAAAAd/rimuru-tempest-tensura-nikki.gif" alt="happy"/>
+                    </button>
+                    <span class="reaction-label">GIF Reactions</span>
+                </div>
+
+                <div class="input-row">
+                    <button class="gif-toggle-btn" id="gifToggle" onclick="toggleReactionBar()" title="GIF Reactions">
+                        <span>🎭</span>
+                    </button>
+                    <div class="input-box-wrap">
+                        <textarea
+                            id="messageInput"
+                            class="msg-input"
+                            placeholder="Type your message, great sage... ✨"
+                            rows="1"
+                            maxlength="2000"
+                        ></textarea>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- GIF message overlay (shown in chat bubble) -->
+<script>
+    const CURRENT_USER_ID = {{ current_user_id }};
+    const CURRENT_USERNAME = "{{ current_username }}";
+
+    const GIF_REACTIONS = {
+        excited: {
+            url: 'https://media.tenor.com/zXnP5MqQbvEAAAAd/rimuru-tempest-tensura.gif',
+            label: '🔥 Rimuru is HYPED!'
+        },
+        slime: {
+            url: 'https://media.tenor.com/s1bsKHVqDNMAAAAd/rimuru-slime.gif',
+            label: '💙 Slime vibes~'
+        },
+        happy: {
+            url: 'https://media.tenor.com/kfpGGwE_r0cAAAAd/rimuru-tempest-tensura-nikki.gif',
+            label: '😊 Rimuru is happy!'
+        }
+    };
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<script src="/static/js/particles.js"></script>
+<script src="/static/js/chat.js"></script>
+</body>
+</html>
