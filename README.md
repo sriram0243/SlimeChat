@@ -86,7 +86,6 @@ Open in browser:
 http://localhost:5000
 📸 Screenshots
 
-(Add your screenshots here)
 
 🚀 Future Improvements
 🟢 Online / Offline status
